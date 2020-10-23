@@ -21,6 +21,10 @@ public class MenuItem {
 		this.freeDelivery = freeDelivery;
 	}
 	
+	public MenuItem() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public float getPrice() {
 		return price;
 	}
@@ -70,6 +74,14 @@ public class MenuItem {
 	public String toString() {
 		return "MenuItem [id=" + id + ", name=" + name + ", price=" + price + ", active=" + active + ", dateOfLaunch="
 				+ dateOfLaunch + ", category=" + category + ", freeDelivery=" + freeDelivery + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
 	}
 
 	@Override

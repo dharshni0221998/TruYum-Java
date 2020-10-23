@@ -9,7 +9,7 @@ import com.cts.truyum.model.Cart;
 import com.cts.truyum.model.MenuItem;
 
 public class CartDaoCollectionImpl implements CartDao{
-	private HashMap<Long,Cart> userCarts;
+	private static HashMap<Long,Cart> userCarts;
 	
 	public CartDaoCollectionImpl(){
 		if(userCarts==null){
@@ -32,12 +32,15 @@ public class CartDaoCollectionImpl implements CartDao{
 		MenuItemDao menuItemDao = new MenuItemDaoCollectionImpl();
 		MenuItem menuItem = menuItemDao.getMenuItem(menuItemId);
 		boolean set =false;
+		if(!userCarts.isEmpty()){
 		for(Entry<Long, Cart> e:userCarts.entrySet()){
 			if(e.getKey()==userId){
 				e.getValue().getMenuItemList().add(menuItem);
 				set = true;
+				break;
 			}
 			
+		}
 		}
 		if(!set){
 			List<MenuItem> menuItemList = new ArrayList<MenuItem>();
@@ -50,17 +53,20 @@ public class CartDaoCollectionImpl implements CartDao{
 		
 	}
 	public List<MenuItem> getAllCartItems(long userId) throws CartEmptyException{
-		for(Entry<Long, Cart> e: userCarts.entrySet()){
+		List<MenuItem> menuListItem=new ArrayList<MenuItem>();
+		for(Entry<Long,Cart> e: userCarts.entrySet()){
 			if(e.getKey()==userId){
 				if(e.getValue().getMenuItemList().isEmpty()){
 					throw new CartEmptyException();
 				}
 				else{
 					double total=0;
-					for(MenuItem m:e.getValue().getMenuItemList()){
+					menuListItem = e.getValue().getMenuItemList();
+					for(MenuItem m:menuListItem){
 						total+=m.getPrice();
 					}
 					e.getValue().setTotal(total);
+					//System.out.println(e.getValue().getTotal());
 				}
 				return e.getValue().getMenuItemList();
 			}
@@ -69,6 +75,21 @@ public class CartDaoCollectionImpl implements CartDao{
 		
 	}
 	public void removeCartItem(long userId,long menuItemId){
+		
+		List<MenuItem> menuListItem=new ArrayList<MenuItem>();
+		for(Entry<Long,Cart>e:userCarts.entrySet()){
+			if(e.getKey()==userId){
+				menuListItem = e.getValue().getMenuItemList();
+				for(int i=0;i<menuListItem.size();i++){
+					if(menuListItem.get(i).getId()==menuItemId){
+						menuListItem.remove(i);
+					}
+				}
+				
+			}
+		}
+		
+		
 		
 	}
 }
